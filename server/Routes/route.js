@@ -54,6 +54,8 @@ router.post("/login", async (req, res) => {
     // extract data from request
     const { email, pass } = req.body;
     //     // console.log(req.body)
+try{
+
 
     // validate request
     if (!email || !pass) {
@@ -64,39 +66,39 @@ router.post("/login", async (req, res) => {
     // if request is valid
     // try {
     // check if the user already exists
-    const preuser = await mernprac.findOne({ email: email });
+    else{
+        const preuser = await mernprac.findOne({ email: email });
     const preuserpass=await bcrypt.compare(pass,preuser.pass);
     // const preuserpass = await mernprac.findOne({ pass: pass });
     // console.log(preuserpass);
 
 
     if (preuser && preuserpass) {
-        //  res.status(200).json();
         
         
         const accessToken = jwt.sign({ data: preuser }, "jwt_secret_password")
+        //  res.status(200).json("");
         jwt.verify(accessToken, 'jwt_secret_password', (err, authData) => {
             // const result={accessToken,authData}
             console.log("jwt.verify");
             console.log(accessToken);
-
-            if (err) {
-                console.log(err)
-                res.sendStatus('403')
-            } else {
-                res.json({
-                    // message: "post created",
-                    // result
-                    accessToken
-                });
-            }
+            res.json({
+                // message: "post created",
+                // result
+                accessToken
+            });
         });
    
 
     } else {
-        res.status(404).json(" login unsuccessful");
+        res.status(404).json( " login unsuccessful")
+                     console.log("Invalid user")
     }
-
+}
+}catch(error){
+console.log("error")
+res.status(404).json("")
+}
 })
 
 
